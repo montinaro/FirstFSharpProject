@@ -1,0 +1,11 @@
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.exe.config
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.XML
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.exe
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.pdb
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Core.dll
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Core.xml
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\obj\Debug\ConnectToDb.exe
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\obj\Debug\ConnectToDb.pdb
+d:\users\montinaror\documents\visual studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Data.TypeProviders.dll
+D:\Users\montinaror\Documents\Visual Studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\Newtonsoft.Json.dll
+D:\Users\montinaror\Documents\Visual Studio 2013\Projects\ConnectToDb\ConnectToDb\bin\Debug\Newtonsoft.Json.xml
