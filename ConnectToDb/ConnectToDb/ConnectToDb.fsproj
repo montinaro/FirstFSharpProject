@@ -58,8 +58,8 @@
     <None Include="App.config" />
     <Compile Include="ConnectToDatabase.fs" />
     <Compile Include="Menu.fs" />
-    <Compile Include="Program.fs" />
     <None Include="packages.config" />
+    <Compile Include="Program.fs" />
   </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
