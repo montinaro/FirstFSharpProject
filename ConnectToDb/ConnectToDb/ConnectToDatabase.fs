@@ -62,4 +62,42 @@ module ConnectToDatabase =
             select row
         }
 
+    let SingleItemSetQuery idMenuItemBase =
+        query {
+            for row in db.MenuItemSet do
+            where (row.IdMenuItemBase = idMenuItemBase)
+            select row.IdSet.Value
+            exactlyOne
+        }
+
+    let IsItemSetQuery idMenuItemBase =
+        query {
+            for row in db.MenuItemSet do
+            where (row.IdMenuItemBase = idMenuItemBase)
+            select row.IdSet
+            count
+        }
+
+    let ToOption (a:'a) =
+        match obj.ReferenceEquals(a,null) with
+        | true -> None
+        | false -> Some(a)
+ 
+
+    let ItemSetQueryDome idMenuItemBase =
+        query {
+            for student in db.MenuItemBase do
+            leftOuterJoin selection in db.MenuItemSet on
+                           (student.IdMenuItemBase = selection.IdMenuItemBase) into result
+            for selection in result do
+            select ((ToOption student), (ToOption selection))
+        }
+//        query {
+//            for row in db.MenuItemBase do
+//            leftOuterJoin selection in db.MenuItemSet on 
+//                            (row.IdMenuItemBase = selection.IdMenuItemBase) 
+//            select(row, selection)
+//        }
+
+
     

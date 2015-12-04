@@ -20,6 +20,8 @@ module Program =
         let queryMenuItemSets idMenuItemBase = ConnectToDatabase.MenuItemSetQuery idMenuItemBase
         let queryMenuItem idMenuItemBase = ConnectToDatabase.MenuItemQuery idMenuItemBase
         let queryCountries idMenuItemBase = ConnectToDatabase.CountryQuery idMenuItemBase
+        let querySingleItemSet idMenuItemBase = ConnectToDatabase.SingleItemSetQuery idMenuItemBase
+        let queryIsItemSet idMenuItemBase = ConnectToDatabase.IsItemSetQuery idMenuItemBase
 
         let createMenuVersion description version groups =
             new Dto.Menu.MenuVersion(description, version, groups)
@@ -42,19 +44,37 @@ module Program =
         let createCountry sortOrder hidden isDefault countryId =
             new Dto.Menu.Country(sortOrder, hidden, isDefault, countryId)
 
+      
         //Fake
         let createItemProperty =
             new Dto.Menu.ItemProperty("D", "A", "", "", "", "", "", "dept", "adult", [], [])
 
-        let rec createChildItems idMenuItemBase = queryMenuItemChildren idMenuItemBase |> Seq.map(fun row -> createMenuItemBase row.Code (createChildItems row.IdMenuItemBase)) |> Seq.toList
-
-        let createCountries idMenuItemBase = queryCountries idMenuItemBase |> Seq.map(fun row -> createCountry row.SortOrder row.Hidden row.CountryId.HasValue row.CountryId.Value) |> Seq.toList
-
-        //Fake
+         //Fake
         let createCountryProperties =
             let aCountry = createCountry 1 false false 0
             let aProperty = createItemProperty
             new Dto.Menu.CountryProperty (aCountry, aProperty)::[]
+
+        let createCountries idMenuItemBase = queryCountries idMenuItemBase |> Seq.map(fun row -> createCountry row.SortOrder row.Hidden row.CountryId.HasValue row.CountryId.Value) |> Seq.toList
+
+//        let rec create idMenuItemBase =
+//          match (queryIsItemSet idMenuItemBase) with
+//          |false -> queryMenuItemChildren idMenuItemBase |> Seq.map(fun row -> createMenuItem createCountryProperties row.Code (create row.IdMenuItemBase)) |> Seq.toList
+//          |true -> queryMenuItemChildren idMenuItemBase |> Seq.map(fun row -> createMenuItemSet row.Code (createChildItems row.IdMenuItemBase) (createCountries row.IdMenuItemBase) v)
+
+        let rec createChildItems idMenuItemBase = 
+            queryMenuItemChildren idMenuItemBase |> Seq.map(fun row -> 
+            if(queryIsItemSet row.IdMenuItemBase > 0) 
+                then (createMenuItemSet row.Code (createChildItems row.IdMenuItemBase) (createCountries row.IdMenuItemBase) (querySingleItemSet row.IdMenuItemBase) :> Dto.Menu.ItemBase)
+            else
+                 (createMenuItem createCountryProperties row.Code (createChildItems row.IdMenuItemBase) :> Dto.Menu.ItemBase)
+                
+                //(createMenuItem createCountryProperties row.Code (createChildItems row.IdMenuItemBase))
+            ) |> Seq.toList
+
+        
+
+       
 
         let createMenuItemSetList idMenuItemBase = queryMenuItemSets idMenuItemBase |> Seq.map(fun row -> createMenuItemSet row.MenuItemBase.Code (createChildItems row.IdMenuItemBase) (createCountries row.IdMenuItemBase) row.IdSet.Value) |> Seq.toList
 
