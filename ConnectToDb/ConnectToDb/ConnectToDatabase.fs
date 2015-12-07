@@ -27,77 +27,53 @@ module ConnectToDatabase =
             select row
         }
 
-    let MenuItemBaseQuery idMenu =
+    let ItemsRootQuery idMenu =
         query {
-            for row in db.MenuItemBase do
-            where (row.MenuId = idMenu && row.ParentId.HasValue = false)
-            select row
-        }
-    
-    let MenuItemQuery idMenuItemBase =
-        query {
-            for row in db.MenuItem do
-            where (row.IdMenuItemBase = idMenuItemBase)
-            select row
-        }
-
-    let MenuItemChildrenQuery idMenuItemBase =
-        query {
-            for row in db.MenuItemBase do 
-            where (row.ParentId.Value = idMenuItemBase) 
-            select row
-        }
-
-    let MenuItemSetQuery idMenuItemBase =
-        query {
-            for row in db.MenuItemSet do
-            where (row.IdMenuItemBase = idMenuItemBase)
-            select row
-        }
-
-    let CountryQuery idMenuItemBase =
-        query {
-            for row in db.Country do
-            where (row.MenuItemId = idMenuItemBase)
-            select row
-        }
-
-    let SingleItemSetQuery idMenuItemBase =
-        query {
-            for row in db.MenuItemSet do
-            where (row.IdMenuItemBase = idMenuItemBase)
-            select row.IdSet.Value
-            exactlyOne
-        }
-
-    let IsItemSetQuery idMenuItemBase =
-        query {
-            for row in db.MenuItemSet do
-            where (row.IdMenuItemBase = idMenuItemBase)
-            select row.IdSet
-            count
-        }
-
-    let ToOption (a:'a) =
-        match obj.ReferenceEquals(a,null) with
-        | true -> None
-        | false -> Some(a)
- 
-
-    let ItemSetQueryDome idMenuItemBase =
-        query {
-            for student in db.MenuItemBase do
-            leftOuterJoin selection in db.MenuItemSet on
-                           (student.IdMenuItemBase = selection.IdMenuItemBase) into result
+            for itemBase in db.MenuItemBase do
+            where (itemBase.MenuId = idMenu && itemBase.ParentId.HasValue = false)
+            leftOuterJoin itemSet in db.MenuItemSet on
+                           (itemBase.IdMenuItemBase = itemSet.IdMenuItemBase) into result
             for selection in result do
-            select ((ToOption student), (ToOption selection))
+            select (itemBase, selection)
         }
-//        query {
-//            for row in db.MenuItemBase do
-//            leftOuterJoin selection in db.MenuItemSet on 
-//                            (row.IdMenuItemBase = selection.IdMenuItemBase) 
-//            select(row, selection)
-//        }
 
+    let ItemsQuery idMenuBase =
+        query {
+            for itemBase in db.MenuItemBase do
+            where (itemBase.ParentId.Value = idMenuBase)
+            leftOuterJoin itemSet in db.MenuItemSet on
+                           (itemBase.IdMenuItemBase = itemSet.IdMenuItemBase) into result
+            for selection in result do
+            select (itemBase, selection)
+        }
 
-    
+    let CountriesQuery  idItem =
+        query {
+            for country in db.Country do
+            where (country.MenuItemId = idItem)
+            select country
+        }
+
+    let CountryPropertiesQuery idItem = 
+        query {
+            for country in db.Country do
+            where (country.MenuItemId = idItem)
+            leftOuterJoin itemProperty in db.MenuItemProperty on
+                                (country.MenuItemPropertyId.Value = itemProperty.IdMenuItemProperty) into result
+            for selection in result do
+            select (country, selection)
+        }
+
+    let LabelQuery idProperty =
+        query {
+            for label in db.MenuLabel do
+            where (label.MenuItemPropertyId = idProperty)
+            select label
+        }
+
+    let MediaQuery idProperty =
+        query {
+            for media in db.MenuMedia do
+            where (media.MenuItemPropertyId = idProperty)
+            select media
+        }

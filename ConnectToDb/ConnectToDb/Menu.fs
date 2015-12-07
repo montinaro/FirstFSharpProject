@@ -3,9 +3,9 @@
 open System
 
 module Menu =
+    open Newtonsoft.Json
     
-    type Country(sortOrder : int, hidden : bool, isDefault: bool, ?countryId:int) =
-        let IsDefault = countryId.IsSome
+    type Country(sortOrder : int, hidden : bool, isDefault: bool, countryId:Nullable<int>) =
         member this.sortOrder = sortOrder
         member this.hidden = hidden
         member this.isDefault = isDefault
@@ -20,7 +20,7 @@ module Menu =
         member this.uri = uri
         member this.typeMedia = typeMedia
 
-    type ItemProperty(gender: string, season : string, parameters : string, absoluteLink : string, absoluteTarget : string, target: string, targetType : string, department : string, ageRange : string, labels : Label list, medias : Media list, ?macroBrand : int) =
+    type ItemProperty(gender: string, season : string, parameters : string, absoluteLink : string, absoluteTarget : string, target: string, targetType : string, department : string, ageRange : string, labels : Label list, medias : Media list, macroBrand : Nullable<int>) =
         member this.gender = gender
         member this.season = season
         member this.parameters = parameters
@@ -37,7 +37,7 @@ module Menu =
     type CountryProperty(country:Country, itemProperty:ItemProperty) = 
         member this.country = country
         member this.itemProperty = itemProperty
-    
+
     type ItemBase(code : string, items : ItemBase list) = 
         member this.Code = code
         member this.Items = items
