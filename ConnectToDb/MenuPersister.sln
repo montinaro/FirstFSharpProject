@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ConnectToDb", "ConnectToDb\ConnectToDb.fsproj", "{23429476-D5DA-4812-8071-A4F9C9FA3B82}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "MenuPersister", "ConnectToDb\MenuPersister.fsproj", "{23429476-D5DA-4812-8071-A4F9C9FA3B82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

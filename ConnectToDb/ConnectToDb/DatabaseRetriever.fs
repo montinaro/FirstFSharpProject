@@ -1,15 +1,15 @@
-﻿namespace ConnectToDb.ConnectToDatabase
+﻿namespace MenuPersister
 
 open Microsoft.FSharp.Data.TypeProviders
 
-module ConnectToDatabase =
+module db =
     type dbSchema = SqlDataConnection<"Data Source=ysql08dev;Initial Catalog=MenuManagementPreview;Integrated Security=true;;connection timeout=45;Application Name=ConnectToBatabase">
     let db = dbSchema.GetDataContext()
     
-    let MenuVersionQuery division =
+    let MenuVersionQuery division version =
         query {
             for row in db.MenuVersion do
-            where (row.DivisionId  = division) 
+            where (row.DivisionId  = division && row.Version = version) 
             select row
         }
 
@@ -77,3 +77,13 @@ module ConnectToDatabase =
             where (media.MenuItemPropertyId = idProperty)
             select media
         }
+
+    let getMenuGroups idVersion = MenuGroupQuery idVersion
+    let getVersions divisionId version = MenuVersionQuery divisionId version
+    let getMenus idMenuGroup = MenuQuery idMenuGroup
+    let getRootItems idMenu = ItemsRootQuery idMenu
+    let getItems idItem = ItemsQuery idItem
+    let getCountries idItem = CountriesQuery idItem
+    let getCountryProperties idItem = CountryPropertiesQuery idItem
+    let getLabels idProperty = LabelQuery idProperty
+    let getMedia idProperty = MediaQuery idProperty

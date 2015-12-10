@@ -1,0 +1,12 @@
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.exe.config
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.XML
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.exe
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\ConnectToDb.pdb
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Core.dll
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Data.TypeProviders.dll
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\Newtonsoft.Json.dll
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\FSharp.Core.xml
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\bin\Debug\Newtonsoft.Json.xml
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\obj\Debug\MenuPersister.fsproj.ConnectToDb.exe.config
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\obj\Debug\ConnectToDb.exe
+D:\Users\montinaror\Documents\GitHub\FirstFSharpProject\ConnectToDb\ConnectToDb\obj\Debug\ConnectToDb.pdb

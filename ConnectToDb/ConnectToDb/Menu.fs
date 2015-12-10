@@ -1,67 +1,105 @@
-﻿namespace ConnectToDb.Dto
-
+﻿namespace MenuPersister
 open System
 
-module Menu =
-    open Newtonsoft.Json
+module MenuDto =
     
-    type Country(sortOrder : int, hidden : bool, isDefault: bool, countryId:Nullable<int>) =
-        member this.sortOrder = sortOrder
-        member this.hidden = hidden
-        member this.isDefault = isDefault
-        member this.countryId = countryId
+    type Country(country:db.dbSchema.ServiceTypes.Country) = //(SortOrder : int, Hidden : bool, IsDefault: bool, CountryId:Nullable<int>) =
+        member this.SortOrder = country.SortOrder
+        member this.Hidden = country.Hidden
+        member this.CountryId = country.CountryId
 
-    type Label(languageId : int, value : string)=
-        member this.languageId = languageId
-        member this.value = value
+    type Label(label:db.dbSchema.ServiceTypes.MenuLabel) =
+        member this.LanguageId = label.LanguageId
+        member this.Value = label.Value
 
-    type Media(languageId : int, uri : string, typeMedia : string)=
-        member this.languageId = languageId
-        member this.uri = uri
-        member this.typeMedia = typeMedia
+    type Media(media:db.dbSchema.ServiceTypes.MenuMedia)=
+        member this.LanguageId = media.LanguageId
+        member this.Uri = media.Uri
+        member this.typeMedia = media.Type
 
-    type ItemProperty(gender: string, season : string, parameters : string, absoluteLink : string, absoluteTarget : string, target: string, targetType : string, department : string, ageRange : string, labels : Label list, medias : Media list, macroBrand : Nullable<int>) =
-        member this.gender = gender
-        member this.season = season
-        member this.parameters = parameters
-        member this.absoluteLink = absoluteLink
-        member this.absoluteTarget = absoluteTarget
-        member this.target = target
-        member this.targetType = targetType
-        member this.department = department
-        member this.ageRange = ageRange
-        member this.labels = labels
-        member this.medias = medias
-        member this.macroBrand = macroBrand
+    let getLabelsList idProperty = db.getLabels idProperty 
+                                        |> Seq.map(fun row -> new Label(row)) 
+                                        |> Seq.toList
+
+    let getMediaList idProperty = db.getMedia idProperty 
+                                    |> Seq.map(fun row -> new Media(row)) 
+                                    |> Seq.toList
+
+    type ItemProperty(property:db.dbSchema.ServiceTypes.MenuItemProperty) =
+        member this.Gender = property.Gender
+        member this.Season = property.Season
+        member this.Parameters = property.Parameters
+        member this.AbsoluteLink = property.AbsoluteLink
+        member this.AbsoluteLinkTarget = property.AbsoluteLinkTarget
+        member this.Target = property.Target
+        member this.TargetType = property.TargetType
+        member this.Department = property.Department
+        member this.AgeRange = property.AgeRange
+        member this.Labels = (getLabelsList property.IdMenuItemProperty)
+        member this.Medias =  (getMediaList property.IdMenuItemProperty)
+        member this.MacroBrand = property.MacroBrand
+
+    type CountryProperty(Country:db.dbSchema.ServiceTypes.Country, ItemProperty:db.dbSchema.ServiceTypes.MenuItemProperty) = 
+        member this.Country = new Country(Country)
+        member this.ItemProperty = new ItemProperty(ItemProperty)
+    
+
+    type ItemBase(Code:string, Items: ItemBase list) = 
+        member this.Code = Code
+        member this.Items = Items
+
+    type Item(CountryProperties : CountryProperty list, Code : string, Items : ItemBase list) = 
+        inherit ItemBase(Code, Items)
+        member this.CountryProperties = CountryProperties
+
+    type ItemSet(Code : string, Items : ItemBase list, Countries : Country list, SetId : int) =
+        inherit ItemBase(Code, Items)
+        member this.Countries = Countries
+        member this.SetId = SetId
+
+    type Menu(Device : string, Description : string, Items : ItemBase list) =
+        member this.Device = Device
+        member this.Description = Description
+        member this.Items = Items
         
-    type CountryProperty(country:Country, itemProperty:ItemProperty) = 
-        member this.country = country
-        member this.itemProperty = itemProperty
+    type MenuGroup(Code : string, Menus : Menu list) = 
+        member this.Code = Code
+        member this.Menus = Menus
 
-    type ItemBase(code : string, items : ItemBase list) = 
-        member this.Code = code
-        member this.Items = items
+    type MenuVersion(VersionDescription : string, VersionId : int, Groups : MenuGroup list) =  
+        member this.VersionDescription = VersionDescription
+        member this.VersionId = VersionId
+        member this.Groups = Groups
 
-    type Item(countryProperties : CountryProperty list, code : string, items : ItemBase list) = 
-        inherit ItemBase(code, items)
-        member this.countryProperties = countryProperties
+    let createMenu (menu:db.dbSchema.ServiceTypes.Menu) items = 
+        new Menu(menu.Context_Device, menu.Description, items)
 
-    type ItemSet(code : string, items : ItemBase list, countries : Country list, setId : int) =
-        inherit ItemBase(code, items)
-        member this.countries = countries
-        member this.setId = setId
+    let createMenuGroup code menus =
+        new MenuGroup(code, menus)
 
-    type Menu(device : string, description : string, items : ItemBase list) =
-        member this.device = device
-        member this.description = description
-        member this.items = items
-        
-    type MenuGroup(code : string, menus : Menu list) = 
-        member this.code = code
-        member this.menus = menus
+    let createMenuVersion description version groups =
+        new MenuVersion(description, version, groups)
 
-    type MenuVersion(versionDescription : string, versionId : int, groups : MenuGroup list) =  
-        member this.versionDescription = versionDescription
-        member this.versionId = versionId
-        member this.groups = groups
+    let getCountriesList idMenuItemBase = db.getCountries idMenuItemBase 
+                                                |> Seq.map(fun row -> new Country(row)) 
+                                                |> Seq.toList
+    
+    let getCountryProperties idMenuItemBase = db.getCountryProperties idMenuItemBase 
+                                                |> Seq.map(fun (country, property) -> new CountryProperty(country, property)) 
+                                                |> Seq.toList
 
+    let rec createItems (itemBase:db.dbSchema.ServiceTypes.MenuItemBase) (itemSet:db.dbSchema.ServiceTypes.MenuItemSet) = 
+            match itemSet = null with
+            |false -> new ItemSet(itemBase.Code, 
+                                            (db.getItems itemSet.IdMenuItemBase 
+                                                |> Seq.map(fun (itemBaseChild, itemSetChild) -> createItems itemBaseChild itemSetChild) 
+                                                |> Seq.toList), 
+                                            (getCountriesList itemSet.IdMenuItemBase), 
+                                            itemSet.IdSet.Value)
+                                         :> ItemBase
+            |_ -> new Item((getCountryProperties itemBase.IdMenuItemBase), 
+                                        itemBase.Code, 
+                                        (db.getItems itemBase.IdMenuItemBase 
+                                            |> Seq.map(fun (itemBaseChild, itemSetChild) -> createItems itemBaseChild itemSetChild) 
+                                            |> Seq.toList)) 
+                                        :> ItemBase
